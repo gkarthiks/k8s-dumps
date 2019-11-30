@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: atlassian
+    application: bitbucket
+  name: bitbucket-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atlassian
+      application: bitbucket
+  template:
+    metadata:
+      labels:
+        app: atlassian
+        application: bitbucket
+    spec:
+      containers:
+        - image: 'atlassian/bitbucket-server:5.13.1'
+          imagePullPolicy: IfNotPresent
+          name: bitbucket
+          ports:
+            - containerPort: 7990
+              name: web
+              protocol: TCP
+            - containerPort: 7999
+              name: http
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 8
+              memory: 8Gi
+            requests:
+              cpu: 4
+              memory: 4Gi
+          volumeMounts:
+            - mountPath: /var/atlassian/application-data/bitbucket
+              name: data
+      serviceAccount: dev-atlassian-sa
+      volumes:
+        - name: data
+          emptyDir: {}

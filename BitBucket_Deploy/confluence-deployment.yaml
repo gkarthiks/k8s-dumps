@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: atlassian
+    application: confluence
+  name: confluence-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atlassian
+      application: confluence
+  template:
+    metadata:
+      labels:
+        app: atlassian
+        application: confluence
+    spec:
+      containers:
+        - image: 'atlassian/confluence-server:latest'
+          imagePullPolicy: IfNotPresent
+          name: confluence
+          ports:
+            - containerPort: 8090
+              name: web
+              protocol: TCP
+            - containerPort: 8091
+              name: http
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 8
+              memory: 8Gi
+            requests:
+              cpu: 4
+              memory: 4Gi
+          volumeMounts:
+            - mountPath: /var/atlassian/application-data/confluence
+              name: data
+      serviceAccount: dev-atlassian-sa
+      volumes:
+        - name: data
+          emptyDir: {}

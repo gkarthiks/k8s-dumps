@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: atlassian
+    application: confluence
+  name: confluence
+spec:
+  ports:
+    - port: 8090
+      name: web
+      protocol: TCP
+    - containerPort: 8091
+      name: http
+      protocol: TCP
+  selector:
+    app: atlassian
+    application: confluence
+  type: ClusterIP

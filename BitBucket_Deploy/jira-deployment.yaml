@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: atlassian
+    application: jira
+  name: jira-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atlassian
+      application: jira
+  template:
+    metadata:
+      labels:
+        app: atlassian
+        application: jira
+    spec:
+      containers:
+        - image: 'cptactionhank/atlassian-jira:latest'
+          imagePullPolicy: IfNotPresent
+          name: jira
+          ports:
+            - containerPort: 8080
+              name: web
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 4
+              memory: 4Gi
+            requests:
+              cpu: 3
+              memory: 3Gi
+      serviceAccount: dev-atlassian-sa
+      volumes:
+        - name: data
+          emptyDir: {}
